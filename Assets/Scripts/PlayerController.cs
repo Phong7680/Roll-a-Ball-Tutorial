@@ -6,9 +6,16 @@ public class PlayerController : MonoBehaviour
     public float speed; // 動く速さ
     public TMP_Text scoreText; // スコアの UI
     public TMP_Text winText; // リザルトの UI
-
     private Rigidbody rb; // Rididbody
     private int score; // スコア
+
+    // 修正：時間
+    public float timeLimit = 120f; //　時間
+    public TMP_Text timerText; // 時間UI
+    private float timeRemaining;
+    private bool gameEnded = false;
+
+
 
     void Start()
     {
@@ -19,19 +26,35 @@ public class PlayerController : MonoBehaviour
         score = 0;
         SetCountText();
         winText.text = "";
+
+        //　修正：時間, 時間を初期化
+        timeRemaining = timeLimit;
     }
 
     void Update()
     {
-        // カーソルキーの入力を取得
-        var moveHorizontal = Input.GetAxis("Horizontal");
-        var moveVertical = Input.GetAxis("Vertical");
+        // 修正：時間、時間反映
+        if (!gameEnded)
+        {
+            timeRemaining -= Time.deltaTime;
+            timerText.text = "Time: " + Mathf.CeilToInt(timeRemaining).ToString();
 
-        // カーソルキーの入力に合わせて移動方向を設定
-        var movement = new Vector3(moveHorizontal, 0, moveVertical);
+            if (timeRemaining <= 0 && score < 12)
+            {
+                timeRemaining = 0;
+                GameOver();
+            }
 
-        // Ridigbody に力を与えて玉を動かす
-        rb.AddForce(movement * speed);
+            // カーソルキーの入力を取得
+            var moveHorizontal = Input.GetAxis("Horizontal");
+            var moveVertical = Input.GetAxis("Vertical");
+
+            // カーソルキーの入力に合わせて移動方向を設定
+            var movement = new Vector3(moveHorizontal, 0, moveVertical);
+
+            // Ridigbody に力を与えて玉を動かす
+            rb.AddForce(movement * speed);
+        }
     }
 
     // 玉が他のオブジェクトにぶつかった時に呼び出される
@@ -49,6 +72,14 @@ public class PlayerController : MonoBehaviour
             // UI の表示を更新します
             SetCountText();
         }
+
+        // Score trap
+        else if (other.gameObject.CompareTag("Score trap"))
+        {
+            other.gameObject.SetActive(false);
+            score = Mathf.Max(score - 1, 0);
+            SetCountText();
+        }
     }
 
     // UI の表示を更新する
@@ -62,6 +93,21 @@ public class PlayerController : MonoBehaviour
         {
             // リザルトの表示を更新
             winText.text = "You Win!";
+            gameEnded = true;
+
+            // ボールを完全に止める
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
+    }
+
+    void GameOver()
+    {
+        gameEnded = true;
+        winText.text = "Game Over!";
+
+        // ボールを完全に止める
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
     }
 }
