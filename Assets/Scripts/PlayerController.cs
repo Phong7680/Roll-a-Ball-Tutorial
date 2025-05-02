@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     // 修正：一時停止
     private bool stopTrapped = false;
 
+    // 修正: 逆行
+    private bool reverseTrapped = false;
+
     void Start()
     {
         // Rigidbody を取得
@@ -46,20 +49,26 @@ public class PlayerController : MonoBehaviour
                 timeRemaining = 0;
                 GameOver();
             }
+            // カーソルキーの入力を取得
+            var moveHorizontal = Input.GetAxis("Horizontal");
+            var moveVertical = Input.GetAxis("Vertical");
+
+            // 修正：逆行
+            if (reverseTrapped)
+            {
+                moveHorizontal *= -1;
+                moveVertical *= -1;
+            }
 
             // 修正：一時停止
             if (!stopTrapped)
             {
-                // カーソルキーの入力を取得
-                var moveHorizontal = Input.GetAxis("Horizontal");
-                var moveVertical = Input.GetAxis("Vertical");
-
                 // カーソルキーの入力に合わせて移動方向を設定
                 var movement = new Vector3(moveHorizontal, 0, moveVertical);
-
                 // Ridigbody に力を与えて玉を動かす
                 rb.AddForce(movement * speed);
             }
+
         }
     }
 
@@ -92,6 +101,13 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             StartCoroutine(StopTrapEffect());
+        }
+
+        //　修正：Reverse trap
+        else if (other.gameObject.CompareTag("Reverse trap"))
+        {
+            other.gameObject.SetActive(false);
+            StartCoroutine(ReverseControlEffect());
         }
     }
 
@@ -135,5 +151,12 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(5f);
 
         stopTrapped = false;
+    }
+
+    IEnumerator ReverseControlEffect()
+    {
+        reverseTrapped = true;
+        yield return new WaitForSeconds(5f);
+        reverseTrapped = false;
     }
 }
