@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Pick Up
   - Score trap
+  - Stop trap
   layers:
   - Default
   - TransparentFX

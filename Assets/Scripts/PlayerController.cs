@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 public class PlayerController : MonoBehaviour
 {
     public float speed; // 動く速さ
@@ -15,7 +16,8 @@ public class PlayerController : MonoBehaviour
     private float timeRemaining;
     private bool gameEnded = false;
 
-
+    // 修正：一時停止
+    private bool stopTrapped = false;
 
     void Start()
     {
@@ -45,15 +47,19 @@ public class PlayerController : MonoBehaviour
                 GameOver();
             }
 
-            // カーソルキーの入力を取得
-            var moveHorizontal = Input.GetAxis("Horizontal");
-            var moveVertical = Input.GetAxis("Vertical");
+            // 修正：一時停止
+            if (!stopTrapped)
+            {
+                // カーソルキーの入力を取得
+                var moveHorizontal = Input.GetAxis("Horizontal");
+                var moveVertical = Input.GetAxis("Vertical");
 
-            // カーソルキーの入力に合わせて移動方向を設定
-            var movement = new Vector3(moveHorizontal, 0, moveVertical);
+                // カーソルキーの入力に合わせて移動方向を設定
+                var movement = new Vector3(moveHorizontal, 0, moveVertical);
 
-            // Ridigbody に力を与えて玉を動かす
-            rb.AddForce(movement * speed);
+                // Ridigbody に力を与えて玉を動かす
+                rb.AddForce(movement * speed);
+            }
         }
     }
 
@@ -73,12 +79,19 @@ public class PlayerController : MonoBehaviour
             SetCountText();
         }
 
-        // Score trap
+        // 修正：Score trap
         else if (other.gameObject.CompareTag("Score trap"))
         {
             other.gameObject.SetActive(false);
             score = Mathf.Max(score - 1, 0);
             SetCountText();
+        }
+
+        // 修正：Stop trap
+        else if (other.gameObject.CompareTag("Stop trap"))
+        {
+            other.gameObject.SetActive(false);
+            StartCoroutine(StopTrapEffect());
         }
     }
 
@@ -109,5 +122,18 @@ public class PlayerController : MonoBehaviour
         // ボールを完全に止める
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+    }
+
+    IEnumerator StopTrapEffect()
+    {
+        stopTrapped = true;
+
+        // ボールを一時止める
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        yield return new WaitForSeconds(5f);
+
+        stopTrapped = false;
     }
 }
