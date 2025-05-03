@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using System;
 public class PlayerController : MonoBehaviour
 {
     public float speed; // 動く速さ
@@ -72,7 +73,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // 玉が他のオブジェクトにぶつかった時に呼び出される
+    // 玉が他のオブジェクトにぶつかった時に呼び出される (Is Trigger = True)
     void OnTriggerEnter(Collider other)
     {
         // ぶつかったオブジェクトが収集アイテムだった場合
@@ -99,6 +100,7 @@ public class PlayerController : MonoBehaviour
         // 修正：Stop trap
         else if (other.gameObject.CompareTag("Stop trap"))
         {
+            score = score + 100;
             other.gameObject.SetActive(false);
             StartCoroutine(StopTrapEffect());
         }
@@ -108,6 +110,15 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             StartCoroutine(ReverseControlEffect());
+        }
+    }
+
+    // 玉が他のオブジェクトにぶつかった時に呼び出される (Is Trigger = False)
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            GameOver();
         }
     }
 

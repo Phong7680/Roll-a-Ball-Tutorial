@@ -8,6 +8,7 @@ TagManager:
   - Score trap
   - Stop trap
   - Reverse trap
+  - Enemy
   layers:
   - Default
   - TransparentFX
