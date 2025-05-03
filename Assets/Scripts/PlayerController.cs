@@ -90,11 +90,12 @@ public class PlayerController : MonoBehaviour
         }
 
         // 修正：Score trap
-        else if (other.gameObject.CompareTag("Score trap"))
+        else if (other.gameObject.CompareTag("Time trap"))
         {
+            timeRemaining -= 10f;
             other.gameObject.SetActive(false);
-            score = Mathf.Max(score - 1, 0);
-            SetCountText();
+            //score = Mathf.Max(score - 1, 0);
+            //SetCountText();
         }
 
         // 修正：Stop trap

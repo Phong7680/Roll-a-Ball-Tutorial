@@ -5,10 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - Pick Up
-  - Score trap
   - Stop trap
   - Reverse trap
   - Enemy
+  - Time trap
   layers:
   - Default
   - TransparentFX
