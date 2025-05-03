@@ -100,7 +100,6 @@ public class PlayerController : MonoBehaviour
         // 修正：Stop trap
         else if (other.gameObject.CompareTag("Stop trap"))
         {
-            score = score + 100;
             other.gameObject.SetActive(false);
             StartCoroutine(StopTrapEffect());
         }
@@ -159,7 +158,7 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(1f);
 
         stopTrapped = false;
     }
