@@ -8,7 +8,7 @@
 
 ## ゲームプレイ動画
 
-https://github.com/Phong7680/Roll-a-Ball-Tutorial/assets/video.mp4
+https://github.com/Phong7680/Roll-a-Ball-Tutorial/video.mp4
 
 > ゲームの操作方法、トラップの効果、敵との対戦などを実際にプレイしている様子をご覧いただけます。
 
